@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manifest Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: 'sans-serif', sans-serif;
+            background-color: #0E0E0E; 
+            padding: 3vh 5vw; /* Menggunakan unit viewport untuk padding */
+            color: #F1F1F1;
+            line-height: 1.6; /* Meningkatkan line-height untuk memudahkan pembacaan */
+        }
+
+        h1, h2 {
+            color: #65B741;
+            text-align: center;
+            margin-bottom: 2vh; /* Menambahkan margin bawah untuk judul */
+        }
+
+        h1 {
+            font-size: 2.5em;
+        }
+
+        form {
+            background-color: #1A1A1A;
+            padding: 2vh;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.8);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 1vh;
+            color: #D9D9D9;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 1vh;
+            margin-bottom: 2vh;
+            border-radius: 5px;
+            border: 1px solid #333333;
+            background-color: #2D2D2D;
+            color: #FFFFFF;
+            font-size: 1em; /* Menyesuaikan ukuran font untuk input */
+        }
+
+        input[type="button"] {
+            padding: 1vh 2vw;
+            background-color: #65B741;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 1vw;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        input[type="button"]:hover {
+            background-color: #5A9C3F;
+        }
+
+        input[type="button"]:active {
+            transform: scale(0.95);
+        }
+
+        pre {
+            background-color: #1A1A1A;
+            padding: 2vh;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 2vh auto;
+            overflow-x: auto;
+            box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.8);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3vh;
+            color: #65B741;
+        }
+
+        .optional-settings-dropdown {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .optional-settings-dropdown.show {
+            max-height: 500px;
+        }
+
+        .optional-settings-toggle {
+            color: #65B741;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            margin: 2vh auto;
+            font-size: 1em;
+        }
+
+        @media (max-width: 768px) {
+            form {
+                padding: 2vh;
+            }
+
+            input[type="text"], select, input[type="button"] {
+                width: 100%;
+                margin-bottom: 2vh;
+                padding: 1vh;
+            }
+
+            pre {
+                padding: 2vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Manifest<br>Generator</h1>
+<p style="text-align: center; margin-bottom: 2vh;">Manifest Generator is a tool that makes it easy for you to create manifest files for your Minecraft behavior and resource packs.</p>
+
+<form id="manifestForm">
+    <label for="nameAddon">Name Pack:</label>
+    <input type="text" id="nameAddon" name="nameAddon"><br>
+
+    <label for="author">Desc:</label>
+    <input type="text" id="author" name="author"><br>
+
+     <div id="mainScriptDiv" style="display:none;">
+        <label id="mainScriptLabel" for="mainScript">Entry:</label>
+        <input type="text" id="mainScript" name="mainScript" placeholder="script/main.js">
+    </div>
+    
+    <label for="packType">Pack Type:</label>
+    <select id="packType" name="packType" onchange="toggleMainScriptDiv()">
+        <option value="resource">Resource Pack</option>
+        <option value="skin">Skin Pack</option>
+        <option value="behavior-without-script">Behavior Pack</option>
+        <option value="behavior-with-script">Behavior Pack (With Script)</option>
+    </select><br>
+
+    <span class="optional-settings-toggle" onclick="toggleOptionalSettings()">▼ Optional Settings ▼</span>
+    <div class="optional-settings-dropdown">
+        <label for="metadataAuthors">Metadata Authors:</label>
+        <input type="text" id="metadataAuthors" name="metadataAuthors" placeholder="ajay">
+        
+        <label for="metadataURL">Metadata URL:</label>
+        <input type="text" id="metadataURL" name="metadataURL" placeholder="www.ajaystudio.xyz">
+    </div>
+
+    <input type="button" value="Generate Manifest" onclick="generateManifest()">
+    <a id="copyButton" style="display:none;"><input type="button" value="Copy" onclick="copyManifest()"></a>
+    <a id="downloadLink" style="display:none;" download="manifest.json"><input type="button" value="Download"></a>
+</form>
+
+<h2>Result:</h2>
+<pre id="result"></pre>
+
+<footer>
+    <p>creator of this manifest generator:
+    www.ajaystudio.xyz</p>
+</footer>
+
+<script>
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    function toggleOptionalSettings() {
+        var dropdown = document.querySelector('.optional-settings-dropdown');
+        dropdown.classList.toggle('show');
+    }
+
+    function toggleMainScriptDiv() {
+        var packType = document.getElementById('packType').value;
+        var mainScriptDiv = document.getElementById('mainScriptDiv');
+
+        if (packType === "behavior-with-script") {
+            mainScriptDiv.style.display = "block";
+        } else {
+            mainScriptDiv.style.display = "none";
+        }
+    }
+
+    function generateManifest() {
+        var nameAddon = document.getElementById('nameAddon').value;
+        var author = document.getElementById('author').value;
+        var metadataAuthors = document.getElementById('metadataAuthors').value;
+        var metadataURL = document.getElementById('metadataURL').value;
+        var mainScript = document.getElementById('mainScript').value;
+        var packType = document.getElementById('packType').value;
+
+        if (!nameAddon || !author || (packType === "behavior-with-script" && !mainScript)) {
+            alert("All fields must be filled in before generating manifest!");
+            return;
+        }
+
+        var generateButton = document.querySelector('input[type="button"]');
+        generateButton.style.animation = 'buttonClick 0.3s ease';
+        setTimeout(function() {
+            generateButton.style.animation = '';
+        }, 300);
+
+        var manifest = {
+            "format_version": 2,
+            "header": {
+                "name": nameAddon,
+                "description": author,
+                "uuid": generateUUID(),
+                "version": [1, 0, 0],
+                "min_engine_version": [1, 20, 70],
+                "metadata": {}
+            },
+            "modules": []
+        };
+
+        if (metadataAuthors) {
+            manifest.header.metadata.authors = metadataAuthors;
+        }
+
+        if (metadataURL) {
+            manifest.header.metadata.url = metadataURL;
+        }
+
+        if (packType === "behavior-without-script") {
+            manifest.modules.push({
+                "type": "data",
+                "description": "",
+                "uuid": generateUUID(),
+                "version": [1, 0, 0]
+            });
+        }
+
+        if (packType === "behavior-with-script") {
+            manifest.modules.push({
+                "description": "",
+                "uuid": generateUUID(),
+                "version": "1.1.0-beta",
+                "type": "script",
+                "language": "javascript",
+                "entry": mainScript
+            });
+            manifest.dependencies = [
+                {
+                    "module_name": "@minecraft/server",
+                    "version": "1.10.0-beta"
+                },
+                {
+                    "module_name": "@minecraft/server-ui",
+                    "version": "1.2.0-beta"
+                }
+            ];
+        }
+
+        if (packType === "resource") {
+            manifest.modules.push({
+                "type": "resources",
+                "uuid": generateUUID(),
+                "version": [1, 0, 0]
+            });
+        }
+        
+        if (packType === "skin") {
+            manifest.modules.push({
+                "type": "skin_pack",
+                "uuid": generateUUID(),
+                "version": [1, 0, 0]
+            });
+        }
+
+        var result = JSON.stringify(manifest, null, 4);
+        document.getElementById('result').innerText = result;
+
+        var copyButton = document.getElementById('copyButton');
+        copyButton.style.display = 'inline';
+
+        var downloadLink = document.getElementById('downloadLink');
+        downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(result);
+        downloadLink.style.display = 'inline';
+    }
+
+    function copyManifest() {
+        var copyText = document.getElementById('result').innerText;
+        var textarea = document.createElement("textarea");
+        textarea.value = copyText;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('Manifest copied to clipboard!');
+    }
+</script>
+
+</body>
+</html>
