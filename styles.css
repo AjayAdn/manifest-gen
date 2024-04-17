@@ -47,7 +47,7 @@ input[type="text"], select {
 input[type="button"] {
     width: 100%;
     padding: 1vh;
-    background-color: #65B741;
+    background-color: #5AC001;
     color: #FFFFFF;
     border: none;
     margin-bottom: 2vh;
@@ -57,7 +57,7 @@ input[type="button"] {
 }
 
 input[type="button"]:hover {
-    background-color: #5A9C3F;
+    background-color: #5AC001;
 }
 
 input[type="button"]:active {
