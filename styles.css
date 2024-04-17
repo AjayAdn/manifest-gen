@@ -109,13 +109,13 @@ footer {
 
 @media (max-width: 768px) {
     .header-image {
-        width: 73%;
+        width: 78%;
     }
 }
 
 @media (max-width: 480px) {
     .header-image {
-        width: 93%;
+        width: 98%;
     }
 }
 @media (max-width: 768px) {
