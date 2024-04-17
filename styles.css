@@ -96,6 +96,13 @@ footer {
     font-size: 1em;
 }
 
+.header-image {
+    display: block;
+    margin: 0 auto;
+    width: 50%;
+    text-align: center;
+}
+
 @media (max-width: 768px) {
     form {
         padding: 2vh;
