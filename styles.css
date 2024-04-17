@@ -43,13 +43,14 @@ input[type="text"], select {
 }
 
 input[type="button"] {
-    padding: 1vh 2vw;
+    width: 100%;
+    padding: 1vh;
     background-color: #65B741;
     color: #FFFFFF;
     border: none;
+    margin-bottom: 2vh;
     border-radius: 5px;
     cursor: pointer;
-    margin-right: 1vw;
     transition: background-color 0.3s, transform 0.3s;
 }
 
