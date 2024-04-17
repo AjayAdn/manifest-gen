@@ -5,6 +5,10 @@
     font-style: normal;
 } 
 
+body, h1, h2, p, label, input, select, option, footer, button {
+    font-family: 'MinecraftFont', sans-serif; /* Gunakan font Minecraft Anda */
+}
+
 body {
     font-family: 'MinecraftFont', sans-serif;
     background-color: #0E0E0E; 
