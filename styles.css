@@ -99,7 +99,8 @@ footer {
 .header-image {
     display: block;
     margin: 0 auto;
-    width: 50%;
+    max-width: 100%;
+    height: auto;
     text-align: center;
 }
 
