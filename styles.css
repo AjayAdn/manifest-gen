@@ -104,6 +104,17 @@ footer {
 }
 
 @media (max-width: 768px) {
+    .header-image {
+        width: 70%;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-image {
+        width: 90%;
+    }
+}
+@media (max-width: 768px) {
     form {
         padding: 2vh;
     }
